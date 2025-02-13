@@ -1,0 +1,55 @@
+# Build artifacts
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+install_manifest.txt
+
+# Compiled binaries and libraries
+*.o
+*.lo
+*.la
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+*.pch
+*.obj
+*.pdb
+*.lib
+
+# Temporary and backup files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.DS_Store
+
+# Logs and debug files
+*.log
+*.stackdump
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.code-workspace
+*.clangd
+.clangd/
+CMakeUserPresets.json
+
+# Generated documentation
+/docs/doxygen/
+
+# If using Conan or vcpkg package managers
+.conan/
+vcpkg_installed/
+vcpkg/
+CMakePresets.json
+CMakeUserPresets.json
+.cache
