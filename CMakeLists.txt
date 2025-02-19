@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
-project(wordle)
+project(wp)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -44,7 +44,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 file(GLOB SOURCES
   ${CMAKE_SOURCE_DIR}/*.cpp)
 
-add_executable(wordle ${SOURCES})
+add_executable(wp ${SOURCES})
 
 # enable_testing()
 # add_subdirectory(tests)
@@ -53,67 +53,67 @@ add_executable(wordle ${SOURCES})
 #   set(TEST_IGNORE_REGEX ".*/tests/.*")  # Ignore anything in the tests directory
 
 #   # Explicit coverage data paths
-#   set(COVERAGE_RAW_FILE "${CMAKE_BINARY_DIR}/wordle.profraw")
-#   set(COVERAGE_RAW_FILE_TEST "${CMAKE_BINARY_DIR}/wordletest.profraw")
+#   set(COVERAGE_RAW_FILE "${CMAKE_BINARY_DIR}/wp.profraw")
+#   set(COVERAGE_RAW_FILE_TEST "${CMAKE_BINARY_DIR}/wptest.profraw")
 #   set(COVERAGE_DATA_FILE "${CMAKE_BINARY_DIR}/coverage.profdata")
 #   set(COVERAGE_HTML_DIR "${CMAKE_BINARY_DIR}/coverage_html")
 #   set(COVERAGE_HTML_DIR_TEST "${CMAKE_BINARY_DIR}/coverage_html_test")
 
-#   # Custom target to run `wordle` with coverage
-#   add_custom_target(run-wordle
-#     COMMAND LLVM_PROFILE_FILE=${COVERAGE_RAW_FILE} ./wordle
-#     DEPENDS wordle
-#     COMMENT "Running wordle with coverage..."
+#   # Custom target to run `wp` with coverage
+#   add_custom_target(run-wp
+#     COMMAND LLVM_PROFILE_FILE=${COVERAGE_RAW_FILE} ./wp
+#     DEPENDS wp
+#     COMMENT "Running wp with coverage..."
 #     VERBATIM
 #   )
 
-#   # Custom target to run `wordletest` with coverage
-#   add_custom_target(run-wordletest
-#     COMMAND LLVM_PROFILE_FILE=${COVERAGE_RAW_FILE_TEST} ./tests/wordletest
-#     DEPENDS tests/wordletest
-#     COMMENT "Running wordletest with coverage..."
+#   # Custom target to run `wptest` with coverage
+#   add_custom_target(run-wptest
+#     COMMAND LLVM_PROFILE_FILE=${COVERAGE_RAW_FILE_TEST} ./tests/wptest
+#     DEPENDS tests/wptest
+#     COMMENT "Running wptest with coverage..."
 #     VERBATIM
 #   )
 
-#   # Merge coverage data from wordle and wordletest
+#   # Merge coverage data from wp and wptest
 #   add_custom_target(coverage-merge
 #     COMMAND llvm-profdata merge -sparse ${COVERAGE_RAW_FILE} ${COVERAGE_RAW_FILE_TEST} -o ${COVERAGE_DATA_FILE}
-#     DEPENDS run-wordle run-wordletest
+#     DEPENDS run-wp run-wptest
 #     COMMENT "Merging coverage data..."
 #     VERBATIM
 #   )
 
-#   # Generate text coverage report for wordle
-#   add_custom_target(coverage-wordle-text
-#     COMMAND llvm-cov report ./wordle -instr-profile=${COVERAGE_DATA_FILE}
+#   # Generate text coverage report for wp
+#   add_custom_target(coverage-wp-text
+#     COMMAND llvm-cov report ./wp -instr-profile=${COVERAGE_DATA_FILE}
 #     DEPENDS coverage-merge
-#     COMMENT "Generating text coverage report for wordle..."
+#     COMMENT "Generating text coverage report for wp..."
 #     VERBATIM
 #   )
 
-#   # Generate text coverage report for wordletest
-#   add_custom_target(coverage-wordletest-text
-#     COMMAND llvm-cov report ./tests/wordletest -instr-profile=${COVERAGE_DATA_FILE}
+#   # Generate text coverage report for wptest
+#   add_custom_target(coverage-wptest-text
+#     COMMAND llvm-cov report ./tests/wptest -instr-profile=${COVERAGE_DATA_FILE}
 #     DEPENDS coverage-merge
-#     COMMENT "Generating text coverage report for wordletest..."
+#     COMMENT "Generating text coverage report for wptest..."
 #     VERBATIM
 #   )
 
-#   # Generate HTML coverage report for wordle
-#   add_custom_target(coverage-wordle-html
-#     COMMAND llvm-cov show ./wordle -instr-profile=${COVERAGE_DATA_FILE} -format=html
+#   # Generate HTML coverage report for wp
+#   add_custom_target(coverage-wp-html
+#     COMMAND llvm-cov show ./wp -instr-profile=${COVERAGE_DATA_FILE} -format=html
 #   -output-dir=${COVERAGE_HTML_DIR} -ignore-filename-regex=${TEST_IGNORE_REGEX}
 #     DEPENDS coverage-merge
-#     COMMENT "Generating HTML coverage report for wordle..."
+#     COMMENT "Generating HTML coverage report for wp..."
 #     VERBATIM
 #   )
 
-#   # Generate HTML coverage report for wordletest
-#   add_custom_target(coverage-wordletest-html
-#     COMMAND llvm-cov show ./tests/wordletest -instr-profile=${COVERAGE_DATA_FILE}
+#   # Generate HTML coverage report for wptest
+#   add_custom_target(coverage-wptest-html
+#     COMMAND llvm-cov show ./tests/wptest -instr-profile=${COVERAGE_DATA_FILE}
 #   -format=html -output-dir=${COVERAGE_HTML_DIR_TEST} -ignore-filename-regex=${TEST_IGNORE_REGEX}
 #     DEPENDS coverage-merge
-#     COMMENT "Generating HTML coverage report for wordletest..."
+#     COMMENT "Generating HTML coverage report for wptest..."
 #     VERBATIM
 #   )
 # endif()

@@ -5,16 +5,15 @@
 #include <unordered_set>
 #include <vector>
 
-#include "index.hpp"
-
 class InvertedIndex {
     private:
 	static constexpr std::size_t DOC_LENGTH	 = 5;
 	static constexpr std::size_t MAX_INDICES = 130;
+	static constexpr std::size_t BUFFER_SIZE = 2;
 
-	std::unordered_map<Index, std::vector<std::string> > invertedIndex;
+	std::unordered_map<std::string, std::vector<std::string> > invertedIndex;
 
-	std::unordered_set<Index> indices;
+	std::unordered_set<std::string> indices;
 
 	const std::vector<std::string> &docs;
 

@@ -1,5 +1,6 @@
 #include "invertedindex.hpp"
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -14,8 +15,12 @@ void InvertedIndex::makeIndices(void)
 {
 	indices.reserve(MAX_INDICES);
 	for (const auto &doc : docs) {
-		for (size_t i = 0; i < DOC_LENGTH; i++) {
-			indices.emplace(doc[i], i);
+		for (std::size_t i = 0; i < DOC_LENGTH; i++) {
+			std::array<char, BUFFER_SIZE> buf = {
+				doc[i], static_cast<char>(i + '0')
+			};
+			std::string index{ buf.data(), BUFFER_SIZE };
+			indices.emplace(std::move(index));
 		}
 		if (indices.size() == 130) {
 			return;
@@ -26,13 +31,13 @@ void InvertedIndex::makeIndices(void)
 void InvertedIndex::printIndices(void) const
 {
 	for (const auto &i : indices) {
-		i.printIndex();
+		std::cout << i << "\n";
 	}
+	std::cout << indices.size() << "\n";
 }
 
 void InvertedIndex::makeInvertedIndex(void)
 {
-	// for (const auto &i : indices) {}
 }
 
 void InvertedIndex::printInvertedIndex(void) const
