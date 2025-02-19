@@ -1,6 +1,6 @@
-#include <iostream>
+#include "wordle.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, const char *const argv[])
 {
-	std::cout << "In main function!\n";
+	Wordle wordle{ argc, argv };
 }
