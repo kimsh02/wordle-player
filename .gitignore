@@ -53,3 +53,18 @@ vcpkg/
 CMakePresets.json
 CMakeUserPresets.json
 .cache
+
+# Emacs backup and autosave files
+*~
+\#*\#
+.\#*
+
+# Emacs lock files
+*.lock
+
+# Emacs auto-save list
+.tramp
+
+# Emacs project-related files
+.projectile
+.dir-locals.el
