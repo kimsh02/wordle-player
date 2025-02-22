@@ -7,7 +7,6 @@
 
 class InvertedIndex {
     private:
-	static constexpr std::size_t DOC_LENGTH	 = 5;
 	static constexpr std::size_t MAX_INDICES = 130;
 
 	std::unordered_map<std::string, std::vector<std::string> > invertedIndex;

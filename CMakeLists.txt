@@ -1,6 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 project(wp)
 
+find_package(CURL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -45,6 +48,7 @@ file(GLOB SOURCES
   ${CMAKE_SOURCE_DIR}/*.cpp)
 
 add_executable(wp ${SOURCES})
+target_link_libraries(wp PRIVATE CURL::libcurl nlohmann_json::nlohmann_json)
 
 # enable_testing()
 # add_subdirectory(tests)

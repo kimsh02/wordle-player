@@ -1,6 +1,6 @@
-#include "wordleplayer.hpp"
+#include "wordle.hpp"
 
 int main(int argc, const char *const argv[])
 {
-	WordlePlayer wordlePlayer{ argc, argv };
+	Wordle wordle{ argc, argv };
 }

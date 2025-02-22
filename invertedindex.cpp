@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "doclen.hpp"
+
 InvertedIndex::InvertedIndex(const std::vector<std::string> &d)
 	: docs{ d }
 {
@@ -17,7 +19,7 @@ void InvertedIndex::makeIndices(void)
 {
 	indices.reserve(MAX_INDICES);
 	for (const auto &doc : docs) {
-		for (std::size_t i = 0; i < DOC_LENGTH; i++) {
+		for (std::size_t i = 0; i < DOC_LEN; i++) {
 			indices.emplace(std::string{
 				doc.at(i), static_cast<char>(i + '0') });
 		}
