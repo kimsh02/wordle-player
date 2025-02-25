@@ -7,6 +7,7 @@
 
 #include "doclen.hpp"
 #include "nytimesfetcher.hpp"
+#include "wordleplayer.hpp"
 
 Wordle::Wordle(int argc, const char *const *argv)
 	: prog{ *argv }
@@ -16,7 +17,7 @@ Wordle::Wordle(int argc, const char *const *argv)
 
 void Wordle::play(void) const
 {
-	std::cout << wordOfDay << "\n";
+	WordlePlayer wp{};
 }
 
 void Wordle::peek(void) const
@@ -24,6 +25,10 @@ void Wordle::peek(void) const
 }
 
 void Wordle::benchmark(bool) const
+{
+}
+
+void Wordle::openers(void) const
 {
 }
 
@@ -35,6 +40,7 @@ void Wordle::help(void) const
 		<< "Commands:\n"
 		<< "  play [WORD]    Solve word of the day from Wordle (nytimes.com) or solve user-picked 5-letter word\n"
 		<< "  peek           Show word of the day\n"
+		<< "  openers        Show 10 best openers ranked by positional frequency of letters\n"
 		<< "  bm             Benchmark performance\n"
 		<< "  bmv            Benchmark performance verbose\n"
 		<< "  help           Show this help message and exit\n"
@@ -85,9 +91,7 @@ void Wordle::parseArgs(int argc, const char *const *argv)
 
 void Wordle::setNYTimesWordOfDay(void)
 {
-	curl_global_init(CURL_GLOBAL_DEFAULT);
 	wordOfDay = NYTimesFetcher{}.fetch();
-	curl_global_cleanup();
 
 	if (wordOfDay.size() == 0) {
 		std::cerr

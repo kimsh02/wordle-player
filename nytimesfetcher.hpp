@@ -10,6 +10,7 @@ class NYTimesFetcher {
 		"https://www.nytimes.com/svc/wordle/v2/";
 	static constexpr const char *jsonExt = ".json";
 	static constexpr const char *key     = "solution";
+
 	static size_t write_callback(void *, size_t, size_t, void *);
 
 	std::string buildURL(void) const;

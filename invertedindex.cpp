@@ -2,21 +2,20 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 #include "doclen.hpp"
 
-InvertedIndex::InvertedIndex(const std::vector<std::string> &d)
-	: docs{ d }
+InvertedIndex::InvertedIndex(const std::unordered_set<std::string> &docs)
+	: docs{ docs }
+	, indexPair{ makeIndexPair() }
 {
-	makeIndices();
-	printIndices();
-	makeInvertedIndex();
 	printInvertedIndex();
 }
 
-void InvertedIndex::makeIndices(void)
+std::unordered_set<std::string> InvertedIndex::makeIndices(void)
 {
+	std::unordered_set<std::string> indices{};
 	indices.reserve(MAX_INDICES);
 	for (const auto &doc : docs) {
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
@@ -24,43 +23,63 @@ void InvertedIndex::makeIndices(void)
 				doc.at(i), static_cast<char>(i + '0') });
 		}
 		if (indices.size() == 130) {
-			return;
+			break;
 		}
 	}
+	return indices;
 }
 
-void InvertedIndex::printIndices(void) const
-{
-	for (const auto &i : indices) {
-		std::cout << i << "\n";
-	}
-	std::cout << indices.size() << "\n";
-}
+// void InvertedIndex::printIndices(void) const
+// {
+// 	for (const auto &i : indices) {
+// 		std::cout << i << "\n";
+// 	}
+// 	std::cout << indices.size() << "\n";
+// }
 
-void InvertedIndex::makeInvertedIndex(void)
+IndexPair InvertedIndex::makeIndexPair(void)
 {
+	auto	  indices{ makeIndices() };
+	IndexPair indexPair{};
+	indexPair.first.reserve(indices.size());
+	indexPair.second.reserve(indices.size());
 	for (const auto &i : indices) {
 		char	    letter = i.at(0);
 		std::size_t pos	   = i.at(1) - '0';
 		for (const auto &doc : docs) {
 			if (doc.at(pos) == letter) {
-				invertedIndex[i].push_back(doc);
+				indexPair.first[i].insert(doc);
 			}
 		}
+		indexPair.second[i] = indexPair.first[i].size();
 	}
+	return indexPair;
 }
 
 void InvertedIndex::printInvertedIndex(void) const
 {
-	for (const auto &[key, value] : invertedIndex) {
+	std::size_t ctr = 0;
+	for (const auto &[key, value] : indexPair.first) {
 		std::cout << "{ " << key << " }: [";
-
-		for (std::size_t i = 0; i < value.size(); i++) {
+		std::size_t i = 0;
+		ctr += value.size();
+		for (auto it = value.begin(); it != value.end(); it++, i++) {
 			if (i == value.size() - 1) {
-				std::cout << value.at(i) << "]\n";
+				std::cout << *it << "]\n";
 				break;
 			}
-			std::cout << value.at(i) << ", ";
+			std::cout << *it << ", ";
 		}
 	}
+	std::cout << ctr << "\n";
+}
+
+const IndexPair &InvertedIndex::get(void) const
+{
+	return indexPair;
+}
+
+const std::unordered_set<std::string> &InvertedIndex::words(void) const
+{
+	return docs;
 }

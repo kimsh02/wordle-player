@@ -4,12 +4,15 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <unordered_set>
 
 #include "doclen.hpp"
 #include "invertedindex.hpp"
 
-void WordlePlayer::readWords(void)
+std::unordered_set<std::string> WordlePlayer::readWords(void)
 {
+	std::unordered_set<std::string> words{};
+
 	std::ifstream f("../assets/valid-wordle-words.txt");
 	if (!f) {
 		std::cerr << "ERROR: Unable to open file!\n";
@@ -19,9 +22,10 @@ void WordlePlayer::readWords(void)
 	std::string word{};
 	word.reserve(DOC_LEN);
 	while (std::getline(f, word)) {
-		words.push_back(std::move(word));
+		words.insert(std::move(word));
 	}
 	f.close();
+	return words;
 }
 
 void WordlePlayer::printWords(void) const
@@ -31,10 +35,17 @@ void WordlePlayer::printWords(void) const
 	}
 }
 
-WordlePlayer::WordlePlayer(void)
+// TODO
+std::string WordlePlayer::setBestOpener(void)
 {
-	readWords();
-	printWords();
+	return std::string{ "" };
+}
 
-	InvertedIndex invertedIndex{ words };
+WordlePlayer::WordlePlayer(void)
+	: words{ readWords() }
+	, opener{ setBestOpener() }
+	, startIndex{ words }
+
+{
+	printWords();
 }

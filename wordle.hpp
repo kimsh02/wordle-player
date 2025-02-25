@@ -10,11 +10,12 @@ class Wordle {
 
 	void play(void) const;
 	void peek(void) const;
+	void openers(void) const;
 	void benchmark(bool) const;
 	void help(void) const;
 
-	void setUserWordOfDay(std::string);
 	void parseArgs(int argc, const char *const *argv);
+	void setUserWordOfDay(std::string);
 	void setNYTimesWordOfDay(void);
 
     public:
