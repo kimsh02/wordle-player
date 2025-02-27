@@ -8,8 +8,11 @@
 
 #include "doclen.hpp"
 #include "invertedindex.hpp"
+#include "tilegrid.hpp"
+#include "usetoperations.hpp"
+#include "wordscorer.hpp"
 
-std::unordered_set<std::string> WordlePlayer::readWords(void)
+std::unordered_set<std::string> WordlePlayer::readWords(void) const
 {
 	std::unordered_set<std::string> words{};
 
@@ -35,17 +38,35 @@ void WordlePlayer::printWords(void) const
 	}
 }
 
-// TODO
-std::string WordlePlayer::setBestOpener(void)
+std::string WordlePlayer::setBestOpener(void) const
 {
-	return std::string{ "" };
+	/* Hardcoded to PARES from word scoring entire list */
+	return std::string{ "pares" };
 }
 
 WordlePlayer::WordlePlayer(void)
 	: words{ readWords() }
-	, opener{ setBestOpener() }
+	, bestOpener{ setBestOpener() }
 	, startIndex{ words }
 
 {
-	printWords();
+	// printWords();
+}
+
+InvertedIndex WordlePlayer::guess(const TileGrid      &tileGrid,
+				  const InvertedIndex &index)
+{
+	usetop.input(tileGrid, index);
+	return InvertedIndex{ usetop.execute() };
+}
+
+InvertedIndex WordlePlayer::guess(const TileGrid &tileGrid)
+{
+	usetop.input(tileGrid, startIndex);
+	return InvertedIndex{ usetop.execute() };
+}
+
+const std::string &WordlePlayer::opener(void) const
+{
+	return bestOpener;
 }

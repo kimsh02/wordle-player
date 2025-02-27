@@ -2,15 +2,24 @@
 
 #include <string>
 
+#include "invertedindex.hpp"
+#include "tilegrid.hpp"
+#include "wordleplayer.hpp"
+
 class Wordle {
     private:
-	std::string wordOfDay;
+	static constexpr std::size_t MAX_TRIES = 6;
+	static WordlePlayer	     wordlePlayer;
 
 	const char *const prog;
 
-	void play(void) const;
-	void peek(void) const;
-	void openers(void) const;
+	std::string wordOfDay;
+
+	TileGrid tileGrid;
+
+	void play(void);
+	void play_helper(InvertedIndex, std::size_t);
+	void peek(void);
 	void benchmark(bool) const;
 	void help(void) const;
 

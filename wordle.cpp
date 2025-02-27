@@ -2,33 +2,65 @@
 
 #include <curl/curl.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 
 #include "doclen.hpp"
+#include "invertedindex.hpp"
 #include "nytimesfetcher.hpp"
+#include "tilegrid.hpp"
 #include "wordleplayer.hpp"
+#include "wordscorer.hpp"
+
+WordlePlayer Wordle::wordlePlayer{};
 
 Wordle::Wordle(int argc, const char *const *argv)
 	: prog{ *argv }
+	, wordOfDay{ NYTimesFetcher{}.fetch() }
+	, tileGrid{ wordOfDay }
+
 {
 	parseArgs(argc, argv);
 }
 
-void Wordle::play(void) const
+void Wordle::play(void)
 {
-	WordlePlayer wp{};
+	tileGrid.feedback(wordlePlayer.opener());
+	play_helper(wordlePlayer.guess(tileGrid), MAX_TRIES - 1);
 }
 
-void Wordle::peek(void) const
+void Wordle::play_helper(InvertedIndex index, std::size_t tries)
 {
+	std::cout << "\n";
+	if (tries == 0) {
+		std::cerr
+			<< "ERROR: Wordle player failed to guess the word in at most six tries. This should never happen.\n";
+		return;
+	}
+	std::cout << index.words().size() << "\n";
+	return;
+	std::cout << WordScorer{ index }.bestGuess() << "\n";
+	return;
+	tileGrid.feedback(WordScorer{ index }.bestGuess());
+	return;
+	if (tileGrid.won()) {
+		std::cout << "\n";
+		return;
+	} else {
+		play_helper(wordlePlayer.guess(tileGrid, index), tries - 1);
+	}
+}
+
+void Wordle::peek(void)
+{
+	std::cout << "Word of the day is ";
+	tileGrid.feedback(wordOfDay);
+	std::cout
+		<< " ( from https://www.nytimes.com/games/wordle/index.html )!\n";
 }
 
 void Wordle::benchmark(bool) const
-{
-}
-
-void Wordle::openers(void) const
 {
 }
 
@@ -40,7 +72,6 @@ void Wordle::help(void) const
 		<< "Commands:\n"
 		<< "  play [WORD]    Solve word of the day from Wordle (nytimes.com) or solve user-picked 5-letter word\n"
 		<< "  peek           Show word of the day\n"
-		<< "  openers        Show 10 best openers ranked by positional frequency of letters\n"
 		<< "  bm             Benchmark performance\n"
 		<< "  bmv            Benchmark performance verbose\n"
 		<< "  help           Show this help message and exit\n"
@@ -71,9 +102,7 @@ void Wordle::parseArgs(int argc, const char *const *argv)
 	} else {
 		std::string arg{ argv[1] };
 		if (arg == "play") {
-			if (argc == 2) {
-				setNYTimesWordOfDay();
-			} else {
+			if (argc == 3) {
 				setUserWordOfDay(std::string{ argv[2] });
 			}
 			play();

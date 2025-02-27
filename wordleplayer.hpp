@@ -4,6 +4,8 @@
 #include <unordered_set>
 
 #include "invertedindex.hpp"
+#include "tilegrid.hpp"
+#include "usetoperations.hpp"
 
 class WordlePlayer {
     private:
@@ -11,17 +13,23 @@ class WordlePlayer {
 
 	const std::unordered_set<std::string> words;
 
-	const std::string opener;
+	const std::string bestOpener;
 
 	const InvertedIndex startIndex;
 
-	std::unordered_set<std::string> readWords(void);
+	USetOperations usetop;
 
-	std::string setBestOpener(void);
+	std::unordered_set<std::string> readWords(void) const;
+
+	std::string setBestOpener(void) const;
 
 	void printWords(void) const;
 
     public:
 	WordlePlayer(void);
-	std::string guess(void);
+
+	InvertedIndex guess(const TileGrid &, const InvertedIndex &);
+	InvertedIndex guess(const TileGrid &);
+
+	const std::string &opener(void) const;
 };

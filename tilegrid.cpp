@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <iostream>
 #include <unordered_map>
 
@@ -22,13 +23,13 @@ std::unordered_map<char, std::size_t> TileGrid::makeLetterCounter(void) const
 	return letterCounter;
 }
 
-void TileGrid::makeTiles(const std::string &guess)
+void TileGrid::makeTiles(void)
 {
 	clearTiles();
 
 	auto letterCounter{ this->letterCounter };
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
-		if (guess[i] == wordOfDay[i]) {
+		if ((*guess)[i] == wordOfDay[i]) {
 			letterCounter[wordOfDay[i]] -= 1;
 			this->tiles[i] = g;
 		}
@@ -36,7 +37,7 @@ void TileGrid::makeTiles(const std::string &guess)
 
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
 		if (this->tiles[i] == e) {
-			if (letterCounter[guess[i]] > 0) {
+			if (letterCounter[(*guess)[i]] > 0) {
 				letterCounter[wordOfDay[i]] -= 1;
 				this->tiles[i] = y;
 			} else {
@@ -48,8 +49,24 @@ void TileGrid::makeTiles(const std::string &guess)
 
 void TileGrid::feedback(const std::string &guess)
 {
-	makeTiles(guess);
-	printTileGrid(guess, tiles);
+	this->guess = &guess;
+	makeTiles();
+	printTileGrid();
+}
+
+bool TileGrid::won(void) const
+{
+	for (std::size_t i = 0; i < DOC_LEN; i++) {
+		if (tiles[i] != g) {
+			return false;
+		}
+	}
+	return true;
+}
+
+const std::string &TileGrid::word(void) const
+{
+	return *guess;
 }
 
 const std::array<TileGrid::TileState, DOC_LEN> &TileGrid::get(void) const
@@ -62,25 +79,25 @@ void TileGrid::clearTiles(void)
 	std::ranges::fill(tiles, e);
 }
 
-void TileGrid::printTileGrid(const std::string			  &guess,
-			     const std::array<TileState, DOC_LEN> &tiles) const
+void TileGrid::printTileGrid(void) const
 {
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
+		char letter = std::toupper((*guess)[i]);
 		switch (tiles[i]) {
 		case g:
-			printTile(guess[i], G);
+			printTile(letter, G);
 			break;
 		case y:
-			printTile(guess[i], Y);
+			printTile(letter, Y);
 			break;
 		case x:
-			printTile(guess[i], X);
+			printTile(letter, X);
 			break;
 		default:
 			/* Should not go to default*/
 		}
 	}
-	std::cout << "\n";
+	// std::cout << "\n";
 }
 
 void TileGrid::printTile(char letter, const std::array<int, RGB_CHAN> &c) const

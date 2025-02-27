@@ -5,13 +5,11 @@
 
 #include "doclen.hpp"
 
-USetOperations::USetOperations(const std::string   &guess,
-			       const TileGrid	   &tileGrid,
-			       const InvertedIndex &invertedIndex)
-	: guess{ guess }
-	, tileGrid{ tileGrid }
-	, invertedIndex{ invertedIndex }
+void USetOperations::input(const TileGrid      &tileGrid,
+			   const InvertedIndex &invertedIndex)
 {
+	this->tileGrid	    = &tileGrid;
+	this->invertedIndex = &invertedIndex;
 }
 
 void USetOperations::uset_union(std::unordered_set<std::string>	      &a,
@@ -58,7 +56,8 @@ void USetOperations::addPresent(const std::unordered_set<std::string> &b,
 {
 	if (presentUMap[letter].empty()) {
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
-			uset_union(presentUMap[letter], index(key(letter, i)));
+			uset_union(presentUMap[letter],
+				   invertedIndex->at(letter, i));
 		}
 	}
 	uset_difference(presentUMap[letter], b);
@@ -68,28 +67,17 @@ void USetOperations::addAbsent(char letter)
 {
 	if (!presentUMap.contains(letter)) {
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
-			uset_union(absent, index(key(letter, i)));
+			uset_union(absent, invertedIndex->at(letter, i));
 		}
 	}
-}
-
-const std::unordered_set<std::string> &
-USetOperations::index(const std::string &key) const
-{
-	return invertedIndex.get().first.at(key);
-}
-
-std::string USetOperations::key(char letter, std::size_t pos) const
-{
-	return std::string{ letter, static_cast<char>(pos + '0') };
 }
 
 void USetOperations::populate(void)
 {
 	for (std::size_t pos = 0; pos < DOC_LEN; pos++) {
-		auto	    tileState = tileGrid.get()[pos];
-		char	    letter    = guess[pos];
-		const auto &b{ index(key(letter, pos)) };
+		const auto &tileState = tileGrid->get()[pos];
+		char	    letter    = tileGrid->word()[pos];
+		const auto &b{ invertedIndex->at(letter, pos) };
 		switch (tileState) {
 		case TileGrid::g:
 			addCorrect(b);
@@ -115,8 +103,18 @@ void USetOperations::presentAggregate(void)
 	}
 }
 
-std::unordered_set<std::string> USetOperations::execute(void)
+void USetOperations::clear(void)
 {
+	correct.clear();
+	presentUMap.clear();
+	present.clear();
+	absent.clear();
+	result.clear();
+}
+
+const std::unordered_set<std::string> &USetOperations::execute(void)
+{
+	clear();
 	populate();
 	presentAggregate();
 	if (!correct.empty()) {
@@ -133,7 +131,8 @@ std::unordered_set<std::string> USetOperations::execute(void)
 		}
 		return present;
 	} else {
-		auto result{ validWords };
+		// auto result{ invertedIndex->words() };
+		result = invertedIndex->words();
 		uset_difference(result, absent);
 		return result;
 	}
