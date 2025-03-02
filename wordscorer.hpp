@@ -9,4 +9,5 @@ class WordScorer {
     public:
 	WordScorer(const InvertedIndex &);
 	const std::string &bestGuess(void);
+	const std::string &firstWord(void);
 };

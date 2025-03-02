@@ -8,19 +8,18 @@
 
 #include "doclen.hpp"
 
-TileGrid::TileGrid(const std::string &wordOfDay)
-	: wordOfDay{ wordOfDay }
-	, letterCounter{ makeLetterCounter() }
+void TileGrid::setWordOfDay(const std::string &wordOfDay)
 {
+	this->wordOfDay = &wordOfDay;
+	makeLetterCounter();
 }
 
-std::unordered_map<char, std::size_t> TileGrid::makeLetterCounter(void) const
+void TileGrid::makeLetterCounter(void)
 {
-	std::unordered_map<char, std::size_t> letterCounter{};
-	for (const auto &letter : wordOfDay) {
+	letterCounter.clear();
+	for (const auto &letter : *wordOfDay) {
 		letterCounter[letter] += 1;
 	}
-	return letterCounter;
 }
 
 void TileGrid::makeTiles(void)
@@ -29,16 +28,17 @@ void TileGrid::makeTiles(void)
 
 	auto letterCounter{ this->letterCounter };
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
-		if ((*guess)[i] == wordOfDay[i]) {
-			letterCounter[wordOfDay[i]] -= 1;
+		if ((*guess)[i] == (*wordOfDay)[i]) {
+			letterCounter[(*wordOfDay)[i]] -= 1;
 			this->tiles[i] = g;
 		}
 	}
 
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
 		if (this->tiles[i] == e) {
+			// / Letter is present in word of day /
 			if (letterCounter[(*guess)[i]] > 0) {
-				letterCounter[wordOfDay[i]] -= 1;
+				letterCounter[(*guess)[i]] -= 1;
 				this->tiles[i] = y;
 			} else {
 				this->tiles[i] = x;
@@ -64,12 +64,18 @@ bool TileGrid::won(void) const
 	return true;
 }
 
-const std::string &TileGrid::word(void) const
+const std::string &TileGrid::getWordOfDay(void) const
+{
+	return *wordOfDay;
+}
+
+const std::string &TileGrid::getGuess(void) const
 {
 	return *guess;
 }
 
-const std::array<TileGrid::TileState, DOC_LEN> &TileGrid::get(void) const
+const std::array<TileGrid::TileState, DOC_LEN> &
+TileGrid::getFeedback(void) const
 {
 	return tiles;
 }
@@ -94,7 +100,7 @@ void TileGrid::printTileGrid(void) const
 			printTile(letter, X);
 			break;
 		default:
-			/* Should not go to default*/
+			// Should not go to default
 		}
 	}
 	// std::cout << "\n";

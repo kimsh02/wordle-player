@@ -10,12 +10,14 @@ class TileGrid {
     public:
 	enum TileState { e, g, y, x };
 
-	TileGrid(const std::string &);
 	void feedback(const std::string &);
 
-	const std::array<TileState, DOC_LEN> &get(void) const;
-	const std::string		     &word(void) const;
-	bool				      won(void) const;
+	const std::array<TileState, DOC_LEN> &getFeedback(void) const;
+	const std::string		     &getGuess(void) const;
+	const std::string		     &getWordOfDay(void) const;
+
+	void setWordOfDay(const std::string &);
+	bool won(void) const;
 
     private:
 	static constexpr std::size_t RGB_CHAN = 6;
@@ -28,15 +30,14 @@ class TileGrid {
 		58, 58, 60, 255, 255, 255
 	};
 
-	const std::string &wordOfDay;
-
-	const std::unordered_map<char, std::size_t> letterCounter;
-
+	const std::string *wordOfDay;
 	const std::string *guess;
+
+	std::unordered_map<char, std::size_t> letterCounter;
 
 	std::array<TileState, DOC_LEN> tiles;
 
-	std::unordered_map<char, std::size_t> makeLetterCounter(void) const;
+	void makeLetterCounter(void);
 
 	void printTileGrid(void) const;
 	void printTile(char, const std::array<int, RGB_CHAN> &) const;

@@ -13,9 +13,24 @@ InvertedIndex::InvertedIndex(const std::unordered_set<std::string> &docs)
 	// printInvertedIndex();
 }
 
+// InvertedIndex::InvertedIndex(std::unordered_set<std::string> docs)
+// 	: docs{ docs }
+// {
+// }
+
+// std::unordered_set<std::string> &InvertedIndex::giveWords(void)
+// {
+// 	return docs;
+// }
+
 std::string InvertedIndex::key(char letter, std::size_t pos) const
 {
 	return std::string{ letter, static_cast<char>(pos + '0') };
+}
+
+bool InvertedIndex::contains(char letter, std::size_t pos) const
+{
+	return indexPair.first.contains(key(letter, pos));
 }
 
 const std::unordered_set<std::string> &InvertedIndex::at(char	     letter,
@@ -171,19 +186,18 @@ std::string NYTimesFetcher::buildURL(void) const
 
 #include "doclen.hpp"
 
-TileGrid::TileGrid(const std::string &wordOfDay)
-	: wordOfDay{ wordOfDay }
-	, letterCounter{ makeLetterCounter() }
+void TileGrid::setWordOfDay(const std::string &wordOfDay)
 {
+	this->wordOfDay = wordOfDay;
+	makeLetterCounter();
 }
 
-std::unordered_map<char, std::size_t> TileGrid::makeLetterCounter(void) const
+void TileGrid::makeLetterCounter(void)
 {
-	std::unordered_map<char, std::size_t> letterCounter{};
+	letterCounter.clear();
 	for (const auto &letter : wordOfDay) {
 		letterCounter[letter] += 1;
 	}
-	return letterCounter;
 }
 
 void TileGrid::makeTiles(void)
@@ -192,16 +206,17 @@ void TileGrid::makeTiles(void)
 
 	auto letterCounter{ this->letterCounter };
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
-		if ((*guess)[i] == wordOfDay[i]) {
-			letterCounter[wordOfDay[i]] -= 1;
+		if ((guess)[i] == (wordOfDay)[i]) {
+			letterCounter[(wordOfDay)[i]] -= 1;
 			this->tiles[i] = g;
 		}
 	}
 
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
 		if (this->tiles[i] == e) {
-			if (letterCounter[(*guess)[i]] > 0) {
-				letterCounter[wordOfDay[i]] -= 1;
+			// / Letter is present in word of day /
+			if (letterCounter[(guess)[i]] > 0) {
+				letterCounter[(guess)[i]] -= 1;
 				this->tiles[i] = y;
 			} else {
 				this->tiles[i] = x;
@@ -212,7 +227,7 @@ void TileGrid::makeTiles(void)
 
 void TileGrid::feedback(const std::string &guess)
 {
-	this->guess = &guess;
+	this->guess = guess;
 	makeTiles();
 	printTileGrid();
 }
@@ -227,12 +242,18 @@ bool TileGrid::won(void) const
 	return true;
 }
 
-const std::string &TileGrid::word(void) const
+const std::string &TileGrid::getWordOfDay(void) const
 {
-	return *guess;
+	return wordOfDay;
 }
 
-const std::array<TileGrid::TileState, DOC_LEN> &TileGrid::get(void) const
+const std::string &TileGrid::getGuess(void) const
+{
+	return guess;
+}
+
+const std::array<TileGrid::TileState, DOC_LEN> &
+TileGrid::getFeedback(void) const
 {
 	return tiles;
 }
@@ -245,7 +266,7 @@ void TileGrid::clearTiles(void)
 void TileGrid::printTileGrid(void) const
 {
 	for (std::size_t i = 0; i < DOC_LEN; i++) {
-		char letter = std::toupper((*guess)[i]);
+		char letter = std::toupper((guess)[i]);
 		switch (tiles[i]) {
 		case g:
 			printTile(letter, G);
@@ -257,7 +278,7 @@ void TileGrid::printTileGrid(void) const
 			printTile(letter, X);
 			break;
 		default:
-			/* Should not go to default*/
+			// Should not go to default
 		}
 	}
 	// std::cout << "\n";
@@ -271,16 +292,17 @@ void TileGrid::printTile(char letter, const std::array<int, RGB_CHAN> &c) const
 }
 #include "usetoperations.hpp"
 
+#include <iostream>
 #include <ranges>
 #include <unordered_set>
 
 #include "doclen.hpp"
 
-USetOperations::USetOperations(const TileGrid	   &tileGrid,
-			       const InvertedIndex &invertedIndex)
-	: tileGrid{ tileGrid }
-	, invertedIndex{ invertedIndex }
+void USetOperations::input(const TileGrid      &tileGrid,
+			   const InvertedIndex &invertedIndex)
 {
+	this->tileGrid	    = &tileGrid;
+	this->invertedIndex = &invertedIndex;
 }
 
 void USetOperations::uset_union(std::unordered_set<std::string>	      &a,
@@ -322,42 +344,40 @@ void USetOperations::addCorrect(const std::unordered_set<std::string> &b)
 	}
 }
 
-void USetOperations::addPresent(const std::unordered_set<std::string> &b,
-				char				       letter)
+void USetOperations::addPresent(char letter, std::size_t pos)
 {
-	if (presentUMap[letter].empty()) {
-		for (std::size_t i = 0; i < DOC_LEN; i++) {
-			uset_union(presentUMap[letter],
-				   invertedIndex.at(letter, i));
-		}
-	}
-	uset_difference(presentUMap[letter], b);
+	presentUMap[letter].insert(pos);
 }
 
-void USetOperations::addAbsent(char letter)
+void USetOperations::addAbsent(char letter, std::size_t pos)
 {
 	if (!presentUMap.contains(letter)) {
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
-			uset_union(absent, invertedIndex.at(letter, i));
+			if (invertedIndex->contains(letter, i)) {
+				uset_union(absent,
+					   invertedIndex->at(letter, i));
+			}
 		}
+	} else {
+		uset_union(absent, invertedIndex->at(letter, pos));
 	}
 }
 
 void USetOperations::populate(void)
 {
 	for (std::size_t pos = 0; pos < DOC_LEN; pos++) {
-		const auto &tileState = tileGrid.get()[pos];
-		char	    letter    = tileGrid.word()[pos];
-		const auto &b{ invertedIndex.at(letter, pos) };
+		const auto &tileState = tileGrid->getFeedback()[pos];
+		char	    letter    = tileGrid->getGuess()[pos];
+		const auto &b{ invertedIndex->at(letter, pos) };
 		switch (tileState) {
 		case TileGrid::g:
 			addCorrect(b);
 			break;
 		case TileGrid::y:
-			addPresent(b, letter);
+			addPresent(letter, pos);
 			break;
 		case TileGrid::x:
-			addAbsent(letter);
+			addAbsent(letter, pos);
 			break;
 		default:
 			break;
@@ -365,19 +385,33 @@ void USetOperations::populate(void)
 	}
 }
 
-void USetOperations::presentAggregate(void)
+void USetOperations::presentFilter(void)
 {
-	if (!presentUMap.empty()) {
-		for (const auto &p : std::views::values(presentUMap)) {
-			uset_union(present, p);
+	for (const auto &[key, value] : presentUMap) {
+		for (std::size_t i = 0; i < DOC_LEN; i++) {
+			if (value.contains(i)) {
+				uset_union(absent, invertedIndex->at(key, i));
+			} else if (invertedIndex->contains(key, i)) {
+				uset_union(present, invertedIndex->at(key, i));
+			}
 		}
 	}
 }
 
+void USetOperations::clear(void)
+{
+	correct.clear();
+	presentUMap.clear();
+	present.clear();
+	absent.clear();
+	result.clear();
+}
+
 std::unordered_set<std::string> USetOperations::execute(void)
 {
+	clear();
 	populate();
-	presentAggregate();
+	presentFilter();
 	if (!correct.empty()) {
 		if (!present.empty()) {
 			uset_intersection(correct, present);
@@ -392,7 +426,7 @@ std::unordered_set<std::string> USetOperations::execute(void)
 		}
 		return present;
 	} else {
-		auto result{ invertedIndex.words() };
+		result = invertedIndex->words();
 		uset_difference(result, absent);
 		return result;
 	}
@@ -412,13 +446,11 @@ std::unordered_set<std::string> USetOperations::execute(void)
 #include "wordleplayer.hpp"
 #include "wordscorer.hpp"
 
-const WordlePlayer Wordle::wordlePlayer{};
+WordlePlayer Wordle::wordlePlayer{};
 
 Wordle::Wordle(int argc, const char *const *argv)
 	: prog{ *argv }
 	, wordOfDay{ NYTimesFetcher{}.fetch() }
-	, tileGrid{ wordOfDay }
-
 {
 	parseArgs(argc, argv);
 }
@@ -432,13 +464,14 @@ void Wordle::play(void)
 void Wordle::play_helper(InvertedIndex index, std::size_t tries)
 {
 	std::cout << "\n";
+	// index.printInvertedIndex();
+	std::cout << std::boolalpha << index.words().contains("bears") << "\n";
 	if (tries == 0) {
 		std::cerr
 			<< "ERROR: Wordle player failed to guess the word in at most six tries. This should never happen.\n";
 		return;
 	}
 	tileGrid.feedback(WordScorer{ index }.bestGuess());
-	return;
 	if (tileGrid.won()) {
 		std::cout << "\n";
 		return;
@@ -477,17 +510,20 @@ void Wordle::help(void) const
 
 void Wordle::setUserWordOfDay(std::string userWord)
 {
+	/* Check if it's valid 5 letter word */
+
 	if (userWord.size() == DOC_LEN) {
 		std::transform(userWord.begin(),
 			       userWord.end(),
 			       userWord.begin(),
 			       ::tolower);
-		wordOfDay = std::move(userWord);
-
-	} else {
-		help();
-		std::exit(EXIT_SUCCESS);
+		if (wordlePlayer.getWords().contains(userWord)) {
+			wordOfDay = userWord;
+			return;
+		}
 	}
+	help();
+	std::exit(EXIT_SUCCESS);
 }
 
 void Wordle::parseArgs(int argc, const char *const *argv)
@@ -500,6 +536,7 @@ void Wordle::parseArgs(int argc, const char *const *argv)
 			if (argc == 3) {
 				setUserWordOfDay(std::string{ argv[2] });
 			}
+			tileGrid.setWordOfDay(wordOfDay);
 			play();
 		} else if (arg == "peek") {
 			peek();
@@ -566,7 +603,7 @@ void WordlePlayer::printWords(void) const
 std::string WordlePlayer::setBestOpener(void) const
 {
 	/* Hardcoded to PARES from word scoring entire list */
-	return std::string{ "pares" };
+	return std::string{ "reins" };
 }
 
 WordlePlayer::WordlePlayer(void)
@@ -578,21 +615,27 @@ WordlePlayer::WordlePlayer(void)
 	// printWords();
 }
 
-InvertedIndex WordlePlayer::guess(const TileGrid      &tileGrid,
-				  const InvertedIndex &index) const
+const std::unordered_set<std::string> &WordlePlayer::getWords(void) const
 {
-	return InvertedIndex{
-		USetOperations{ tileGrid, index }
-		 .execute()
-	};
+	return startIndex.words();
 }
 
-InvertedIndex WordlePlayer::guess(const TileGrid &tileGrid) const
+InvertedIndex WordlePlayer::guess(const TileGrid      &tileGrid,
+				  const InvertedIndex &index)
 {
-	return InvertedIndex{
-		USetOperations{ tileGrid, startIndex }
-		      .execute()
-	};
+	// index.printInvertedIndex();
+	usetop.input(tileGrid, index);
+	return InvertedIndex{ std::move(usetop.execute()) };
+	// InvertedIndex idx{ (usetop.execute()) };
+	// return InvertedIndex{ (usetop.execute()) };
+	// return idx;
+}
+
+InvertedIndex WordlePlayer::guess(const TileGrid &tileGrid)
+{
+	usetop.input(tileGrid, startIndex);
+	return InvertedIndex{ std::move(usetop.execute()) };
+	// return InvertedIndex{ (usetop.execute()) };
 }
 
 const std::string &WordlePlayer::opener(void) const
@@ -611,10 +654,10 @@ WordScorer::WordScorer(const InvertedIndex &index)
 {
 }
 
-const std::string &WordScorer::bestGuess(void)
+std::string WordScorer::bestGuess(void)
 {
-	const std::string *bestGuess{};
-	std::size_t	   bestScore{ 0 };
+	std::string bestGuess{};
+	std::size_t bestScore{ 0 };
 
 	std::unordered_set<char> letterSet;
 	for (const auto &word : index.words()) {
@@ -622,18 +665,19 @@ const std::string &WordScorer::bestGuess(void)
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
 			char letter = word[i];
 			if (letterSet.contains(letter)) {
-				continue;
+				currScore += index.frequency(letter, i) / 2;
+			} else {
+				currScore += index.frequency(letter, i);
 			}
-			currScore += index.frequency(letter, i);
 			letterSet.insert(letter);
 		}
 		letterSet.clear();
 		if (currScore > bestScore) {
 			bestScore = currScore;
-			bestGuess = &word;
+			bestGuess = word;
 		}
 	}
-	return *bestGuess;
+	return bestGuess;
 }
 #pragma once
 
@@ -655,24 +699,30 @@ class InvertedIndex {
     private:
 	static constexpr std::size_t MAX_KEYS = 130;
 
-	const std::unordered_set<std::string> &docs;
-	const IndexPair			       indexPair;
+	/* By value, and std::move */
+	const std::unordered_set<std::string> docs;
+	const IndexPair			      indexPair;
 
 	std::unordered_set<std::string> makeKeys(void) const;
 	IndexPair			makeIndexPair(void) const;
 
 	// void printIndices(void) const;
-	void printInvertedIndex(void) const;
 
     public:
 	InvertedIndex(const std::unordered_set<std::string> &);
+	// InvertedIndex(std::unordered_set<std::string>);
+
+	void printInvertedIndex(void) const;
 
 	const IndexPair			      &get(void) const;
 	const std::unordered_set<std::string> &words(void) const;
+	// std::unordered_set<std::string>	      &giveWords(void);
 
 	std::string key(char, std::size_t) const;
 
 	const std::unordered_set<std::string> &at(char, std::size_t) const;
+	bool contains(char, std::size_t) const;
+
 	std::size_t frequency(char, std::size_t) const;
 };
 #pragma once
@@ -707,12 +757,14 @@ class TileGrid {
     public:
 	enum TileState { e, g, y, x };
 
-	TileGrid(const std::string &);
 	void feedback(const std::string &);
 
-	const std::array<TileState, DOC_LEN> &get(void) const;
-	const std::string		     &word(void) const;
-	bool				      won(void) const;
+	const std::array<TileState, DOC_LEN> &getFeedback(void) const;
+	const std::string		     &getGuess(void) const;
+	const std::string		     &getWordOfDay(void) const;
+
+	void setWordOfDay(const std::string &);
+	bool won(void) const;
 
     private:
 	static constexpr std::size_t RGB_CHAN = 6;
@@ -725,15 +777,15 @@ class TileGrid {
 		58, 58, 60, 255, 255, 255
 	};
 
-	const std::string &wordOfDay;
+	std::string wordOfDay;
 
-	const std::unordered_map<char, std::size_t> letterCounter;
+	std::unordered_map<char, std::size_t> letterCounter;
 
-	const std::string *guess;
+	std::string guess;
 
 	std::array<TileState, DOC_LEN> tiles;
 
-	std::unordered_map<char, std::size_t> makeLetterCounter(void) const;
+	void makeLetterCounter(void);
 
 	void printTileGrid(void) const;
 	void printTile(char, const std::array<int, RGB_CHAN> &) const;
@@ -749,23 +801,25 @@ class TileGrid {
 #include "invertedindex.hpp"
 #include "tilegrid.hpp"
 
+using PresentUMap = std::unordered_map<char, std::unordered_set<std::size_t> >;
+
 class USetOperations {
     private:
-	const TileGrid	    &tileGrid;
-	const InvertedIndex &invertedIndex;
+	const TileGrid	    *tileGrid;
+	const InvertedIndex *invertedIndex;
 
-	std::unordered_set<std::string>				   correct;
-	std::unordered_map<char, std::unordered_set<std::string> > presentUMap;
-	std::unordered_set<std::string>				   present;
-	std::unordered_set<std::string>				   absent;
-
+	std::unordered_set<std::string> correct;
+	PresentUMap			presentUMap;
+	std::unordered_set<std::string> present;
+	std::unordered_set<std::string> absent;
 	std::unordered_set<std::string> result;
 
 	void addCorrect(const std::unordered_set<std::string> &);
-	void addPresent(const std::unordered_set<std::string> &, char);
-	void addAbsent(char);
+	void addPresent(char, std::size_t);
+	void addAbsent(char, std::size_t);
 	void populate(void);
-	void presentAggregate(void);
+	void presentFilter(void);
+	void clear(void);
 
 	void uset_union(std::unordered_set<std::string> &,
 			const std::unordered_set<std::string> &);
@@ -774,8 +828,10 @@ class USetOperations {
 	void uset_difference(std::unordered_set<std::string> &,
 			     const std::unordered_set<std::string> &);
 
+	// void printSet(void) const;
+
     public:
-	USetOperations(const TileGrid &, const InvertedIndex &);
+	void input(const TileGrid &, const InvertedIndex &);
 	std::unordered_set<std::string> execute(void);
 };
 #pragma once
@@ -789,7 +845,7 @@ class USetOperations {
 class Wordle {
     private:
 	static constexpr std::size_t MAX_TRIES = 6;
-	static const WordlePlayer    wordlePlayer;
+	static WordlePlayer	     wordlePlayer;
 
 	const char *const prog;
 
@@ -817,6 +873,7 @@ class Wordle {
 
 #include "invertedindex.hpp"
 #include "tilegrid.hpp"
+#include "usetoperations.hpp"
 
 class WordlePlayer {
     private:
@@ -828,6 +885,8 @@ class WordlePlayer {
 
 	const InvertedIndex startIndex;
 
+	USetOperations usetop;
+
 	std::unordered_set<std::string> readWords(void) const;
 
 	std::string setBestOpener(void) const;
@@ -837,8 +896,10 @@ class WordlePlayer {
     public:
 	WordlePlayer(void);
 
-	InvertedIndex guess(const TileGrid &, const InvertedIndex &) const;
-	InvertedIndex guess(const TileGrid &) const;
+	InvertedIndex guess(const TileGrid &, const InvertedIndex &);
+	InvertedIndex guess(const TileGrid &);
+
+	const std::unordered_set<std::string> &getWords(void) const;
 
 	const std::string &opener(void) const;
 };
@@ -852,5 +913,5 @@ class WordScorer {
 
     public:
 	WordScorer(const InvertedIndex &);
-	const std::string &bestGuess(void);
+	std::string bestGuess(void);
 };

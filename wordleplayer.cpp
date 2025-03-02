@@ -10,6 +10,7 @@
 #include "invertedindex.hpp"
 #include "tilegrid.hpp"
 #include "usetoperations.hpp"
+#include "utility.hpp"
 #include "wordscorer.hpp"
 
 std::unordered_set<std::string> WordlePlayer::readWords(void) const
@@ -41,7 +42,7 @@ void WordlePlayer::printWords(void) const
 std::string WordlePlayer::setBestOpener(void) const
 {
 	/* Hardcoded to PARES from word scoring entire list */
-	return std::string{ "pares" };
+	return std::string{ "plops" };
 }
 
 WordlePlayer::WordlePlayer(void)
@@ -53,17 +54,28 @@ WordlePlayer::WordlePlayer(void)
 	// printWords();
 }
 
+const std::unordered_set<std::string> &WordlePlayer::getWords(void) const
+{
+	return startIndex.words();
+}
+
 InvertedIndex WordlePlayer::guess(const TileGrid      &tileGrid,
 				  const InvertedIndex &index)
 {
+	// index.printInvertedIndex();
 	usetop.input(tileGrid, index);
-	return InvertedIndex{ usetop.execute() };
+	return InvertedIndex{ std::move(usetop.execute()) };
+	// InvertedIndex idx{ std::move(usetop.execute()) };
+	// printSet(idx.words());
+	// return InvertedIndex{ (usetop.execute()) };
+	// return idx;
 }
 
 InvertedIndex WordlePlayer::guess(const TileGrid &tileGrid)
 {
 	usetop.input(tileGrid, startIndex);
-	return InvertedIndex{ usetop.execute() };
+	return InvertedIndex{ std::move(usetop.execute()) };
+	// return InvertedIndex{ (usetop.execute()) };
 }
 
 const std::string &WordlePlayer::opener(void) const

@@ -13,9 +13,24 @@ InvertedIndex::InvertedIndex(const std::unordered_set<std::string> &docs)
 	// printInvertedIndex();
 }
 
+// InvertedIndex::InvertedIndex(std::unordered_set<std::string> docs)
+// 	: docs{ docs }
+// {
+// }
+
+// std::unordered_set<std::string> &InvertedIndex::giveWords(void)
+// {
+// 	return docs;
+// }
+
 std::string InvertedIndex::key(char letter, std::size_t pos) const
 {
 	return std::string{ letter, static_cast<char>(pos + '0') };
+}
+
+bool InvertedIndex::contains(char letter, std::size_t pos) const
+{
+	return indexPair.first.contains(key(letter, pos));
 }
 
 const std::unordered_set<std::string> &InvertedIndex::at(char	     letter,

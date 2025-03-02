@@ -15,17 +15,17 @@ const std::string &WordScorer::bestGuess(void)
 	const std::string *bestGuess{};
 	std::size_t	   bestScore{ 0 };
 
-	std::cout << index.words().size() << "\n";
-
 	std::unordered_set<char> letterSet;
 	for (const auto &word : index.words()) {
 		std::size_t currScore{ 0 };
 		for (std::size_t i = 0; i < DOC_LEN; i++) {
 			char letter = word[i];
 			if (letterSet.contains(letter)) {
+				// currScore += index.frequency(letter, i) / 2;
 				continue;
+			} else {
+				currScore += index.frequency(letter, i);
 			}
-			currScore += index.frequency(letter, i);
 			letterSet.insert(letter);
 		}
 		letterSet.clear();
@@ -33,8 +33,11 @@ const std::string &WordScorer::bestGuess(void)
 			bestScore = currScore;
 			bestGuess = &word;
 		}
-		std::cout << currScore << "\n";
 	}
-	std::cout << *bestGuess << "\n";
 	return *bestGuess;
+}
+
+const std::string &WordScorer::firstWord(void)
+{
+	return *index.words().begin();
 }

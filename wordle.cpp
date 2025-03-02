@@ -10,6 +10,7 @@
 #include "invertedindex.hpp"
 #include "nytimesfetcher.hpp"
 #include "tilegrid.hpp"
+#include "utility.hpp"
 #include "wordleplayer.hpp"
 #include "wordscorer.hpp"
 
@@ -18,8 +19,6 @@ WordlePlayer Wordle::wordlePlayer{};
 Wordle::Wordle(int argc, const char *const *argv)
 	: prog{ *argv }
 	, wordOfDay{ NYTimesFetcher{}.fetch() }
-	, tileGrid{ wordOfDay }
-
 {
 	parseArgs(argc, argv);
 }
@@ -32,18 +31,13 @@ void Wordle::play(void)
 
 void Wordle::play_helper(InvertedIndex index, std::size_t tries)
 {
+	// printSet(index.words());
 	std::cout << "\n";
 	if (tries == 0) {
 		std::cerr
-			<< "ERROR: Wordle player failed to guess the word in at most six tries. This should never happen.\n";
-		return;
+			<< "ERROR: Wordle player failed to guess the word in at most six tries.\n";
 	}
-	std::cout << index.words().size() << "\n";
-	return;
-	std::cout << WordScorer{ index }.bestGuess() << "\n";
-	return;
-	tileGrid.feedback(WordScorer{ index }.bestGuess());
-	return;
+	tileGrid.feedback(WordScorer{ index }.firstWord());
 	if (tileGrid.won()) {
 		std::cout << "\n";
 		return;
@@ -82,17 +76,20 @@ void Wordle::help(void) const
 
 void Wordle::setUserWordOfDay(std::string userWord)
 {
+	/* Check if it's valid 5 letter word */
+
 	if (userWord.size() == DOC_LEN) {
 		std::transform(userWord.begin(),
 			       userWord.end(),
 			       userWord.begin(),
 			       ::tolower);
-		wordOfDay = std::move(userWord);
-
-	} else {
-		help();
-		std::exit(EXIT_SUCCESS);
+		if (wordlePlayer.getWords().contains(userWord)) {
+			wordOfDay = userWord;
+			return;
+		}
 	}
+	help();
+	std::exit(EXIT_SUCCESS);
 }
 
 void Wordle::parseArgs(int argc, const char *const *argv)
@@ -105,6 +102,7 @@ void Wordle::parseArgs(int argc, const char *const *argv)
 			if (argc == 3) {
 				setUserWordOfDay(std::string{ argv[2] });
 			}
+			tileGrid.setWordOfDay(wordOfDay);
 			play();
 		} else if (arg == "peek") {
 			peek();

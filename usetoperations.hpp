@@ -8,21 +8,28 @@
 
 class USetOperations {
     private:
+	/* std::array */
+	using KeyMap =
+		std::unordered_map<char, std::unordered_set<std::size_t> >;
+	using USet = std::unordered_set<std::string>;
+
 	const TileGrid	    *tileGrid;
 	const InvertedIndex *invertedIndex;
 
-	std::unordered_set<std::string>				   correct;
-	std::unordered_map<char, std::unordered_set<std::string> > presentUMap;
-	std::unordered_set<std::string>				   present;
-	std::unordered_set<std::string>				   absent;
-	std::unordered_set<std::string>				   result;
+	KeyMap correctKeys;
+	KeyMap presentKeys;
+	KeyMap absentKeys;
 
-	void addCorrect(const std::unordered_set<std::string> &);
-	void addPresent(const std::unordered_set<std::string> &, char);
-	void addAbsent(char);
-	void populate(void);
-	void presentAggregate(void);
+	USet correctUSet;
+	USet presentUSet;
+	USet absentUSet;
+
 	void clear(void);
+	void makeKeys(void);
+	void addKey(char, std::size_t, KeyMap &);
+	void makeCorrectUSet(void);
+	void makePresentUSet(void);
+	void makeAbsentUSet(void);
 
 	void uset_union(std::unordered_set<std::string> &,
 			const std::unordered_set<std::string> &);
@@ -33,5 +40,5 @@ class USetOperations {
 
     public:
 	void input(const TileGrid &, const InvertedIndex &);
-	const std::unordered_set<std::string> &execute(void);
+	std::unordered_set<std::string> execute(void);
 };

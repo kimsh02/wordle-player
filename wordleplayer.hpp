@@ -31,5 +31,7 @@ class WordlePlayer {
 	InvertedIndex guess(const TileGrid &, const InvertedIndex &);
 	InvertedIndex guess(const TileGrid &);
 
+	const std::unordered_set<std::string> &getWords(void) const;
+
 	const std::string &opener(void) const;
 };
