@@ -4,7 +4,7 @@
 
 ## Benchmark
 
-#* Usage
+## Usage
 ```
 Usage: wp COMMAND
 
