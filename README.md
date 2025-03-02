@@ -2,7 +2,11 @@
 
 ## Word of the Day
 
+![Word of the day demo](assets/play.gif)
+
 ## Benchmark
+
+![Benchmark verbose demo](assets/bmv.gif)
 
 ## Usage
 ```
@@ -45,3 +49,7 @@ correct word.
 
 * Project must be built in a separate subdirectory of the root directory, and
 not in the root direcotry itself for it to find the `assets` folder.
+
+## Credits
+
+* `valid-wordle-words.txt` provided by [dracos](https://gist.github.com/dracos/dd0668f281e685bad51479e5acaadb93)
