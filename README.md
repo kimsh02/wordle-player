@@ -24,10 +24,6 @@ Examples:
   wp bm PROXY
   ```
 
-## Note
-Project must be built in a subdirectory in the root directory, and not in root
-direcotry itself for it to find the `assets` folder.
-
 ## Details
 
 * `wordle-player` builds a modified version of an NLP data structure known as an
@@ -44,3 +40,8 @@ operations for which a new inverted index is built.
 
 * This is procedure is repeated in a recursive call until it arrives at the
 correct word.
+
+## Note
+
+* Project must be built in a separate subdirectory of the root directory, and
+not in the root direcotry itself for it to find the `assets` folder.
