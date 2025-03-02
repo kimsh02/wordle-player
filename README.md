@@ -35,5 +35,5 @@ the feedback from the tiles (green for corret letter and position, yellow for
 correct letter and wrong position, and gray for wrong letter) to generate a
 narrower unordered set of valid guesses for which a new inverted index is
 built.
-* This is procedure is repeated in a recursive call until `wordle-player`
-arrives at the correct word.
+* This is procedure is repeated in a recursive call until it arrives at the
+correct word.
