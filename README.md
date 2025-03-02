@@ -35,8 +35,8 @@ performed on the inverted index according to the feedback from the tiles (green
 for corret letter and position, yellow for correct letter and wrong position,
 and gray for wrong letter).
 
-* A narrower unordered set of valid guesses is produced from the set operations
-for which a new inverted index is built.
+* A narrower, unordered set of valid guesses is produced as a result of the set
+operations for which a new inverted index is built.
 
 * This is procedure is repeated in a recursive call until it arrives at the
 correct word.
