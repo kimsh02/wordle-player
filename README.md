@@ -1,6 +1,6 @@
 # wordle-player
 
-** Word of the Day
+## Word of the Day
 
 ## Benchmark
 
