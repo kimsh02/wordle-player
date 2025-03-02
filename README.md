@@ -29,11 +29,14 @@ Examples:
 * `wordle-player` builds a modified version of an NLP data structure known as an
 inverted index to organize valid guesses into unordered sets based on the
 position of their letters.
-* Then, a combination of set operations union,
-intersection, and difference are performed on the inverted index according to
-the feedback from the tiles (green for corret letter and position, yellow for
-correct letter and wrong position, and gray for wrong letter) to generate a
-narrower unordered set of valid guesses for which a new inverted index is
-built.
+
+* Then, a combination of set operations union, intersection, and difference are
+performed on the inverted index according to the feedback from the tiles (green
+for corret letter and position, yellow for correct letter and wrong position,
+and gray for wrong letter).
+
+* A narrower unordered set of valid guesses is produced from the set operations
+for which a new inverted index is built.
+
 * This is procedure is repeated in a recursive call until it arrives at the
 correct word.
