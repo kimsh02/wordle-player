@@ -51,7 +51,6 @@ void TileGrid::feedback(const std::string &guess)
 {
 	this->guess = &guess;
 	makeTiles();
-	printTileGrid();
 }
 
 bool TileGrid::won(void) const

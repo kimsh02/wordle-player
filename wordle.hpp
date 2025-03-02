@@ -17,14 +17,15 @@ class Wordle {
 
 	TileGrid tileGrid;
 
-	void play(void);
-	void play_helper(InvertedIndex, std::size_t);
-	void peek(void);
-	void benchmark(bool) const;
-	void help(void) const;
+	std::size_t play(bool);
+	std::size_t play_helper(InvertedIndex, std::size_t, bool);
+	void	    peek(void);
+	void	    benchmark(bool);
+	void	    help(void) const;
 
 	void parseArgs(int argc, const char *const *argv);
-	void setUserWordOfDay(std::string);
+	void setUserWordOfDay(const std::string &);
+	void validateWord(std::string &userWord) const;
 	void setNYTimesWordOfDay(void);
 
     public:

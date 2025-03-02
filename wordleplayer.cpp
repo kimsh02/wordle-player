@@ -42,7 +42,7 @@ void WordlePlayer::printWords(void) const
 std::string WordlePlayer::setBestOpener(void) const
 {
 	/* Hardcoded to PARES from word scoring entire list */
-	return std::string{ "plops" };
+	return std::string{ "pares" };
 }
 
 WordlePlayer::WordlePlayer(void)
@@ -54,9 +54,14 @@ WordlePlayer::WordlePlayer(void)
 	// printWords();
 }
 
+void WordlePlayer::setUserOpener(std::string userOpener)
+{
+	bestOpener = std::move(userOpener);
+}
+
 const std::unordered_set<std::string> &WordlePlayer::getWords(void) const
 {
-	return startIndex.words();
+	return words;
 }
 
 InvertedIndex WordlePlayer::guess(const TileGrid      &tileGrid,

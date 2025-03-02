@@ -18,6 +18,7 @@ class TileGrid {
 
 	void setWordOfDay(const std::string &);
 	bool won(void) const;
+	void printTileGrid(void) const;
 
     private:
 	static constexpr std::size_t RGB_CHAN = 6;
@@ -39,7 +40,6 @@ class TileGrid {
 
 	void makeLetterCounter(void);
 
-	void printTileGrid(void) const;
 	void printTile(char, const std::array<int, RGB_CHAN> &) const;
 
 	void makeTiles(void);

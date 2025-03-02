@@ -13,7 +13,7 @@ class WordlePlayer {
 
 	const std::unordered_set<std::string> words;
 
-	const std::string bestOpener;
+	std::string bestOpener;
 
 	const InvertedIndex startIndex;
 
@@ -33,5 +33,6 @@ class WordlePlayer {
 
 	const std::unordered_set<std::string> &getWords(void) const;
 
+	void		   setUserOpener(std::string userOpener);
 	const std::string &opener(void) const;
 };
