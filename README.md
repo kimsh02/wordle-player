@@ -24,7 +24,11 @@ Examples:
   wp bm PROXY
   ```
 
-# Details
+## Note
+Project must be built in a subdirectory in the root directory, and not in root
+direcotry itself for it to find the `assets` folder.
+
+## Details
 
 * `wordle-player` builds a modified version of an NLP data structure known as an
 inverted index to organize valid guesses into unordered sets based on the
