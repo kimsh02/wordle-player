@@ -42,9 +42,10 @@ and gray for wrong letter).
 * A narrower, unordered set of valid guesses is produced as a result of the set
 operations for which a new inverted index is built.
 
-* A word scorer based primarily on the relative frequency of letters in the set is applied on
-the narrower set of valid guesses. This word scorer runs every second and fourth try to pick the most
-optimal guess, and on every other try, a random word from the set is picked as the guess.
+* A word scorer based primarily on the relative frequency of letters in the set
+is applied on the narrower set of valid guesses. This word scorer runs every
+second and fourth try to pick the most calibrating optimal guess, and on every
+other try, a random word from the set is picked as the guess.
 
 * This procedure is repeated in a recursive call until it arrives at the
 correct word.
