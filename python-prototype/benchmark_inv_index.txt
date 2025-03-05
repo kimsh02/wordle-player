@@ -1,0 +1,159 @@
+Playing with opener 'adieu'
+
+Words starting with 'a'
+Number of words:		868
+Total time taken:		96.3202s
+Average tries per word:		6.303
+Average time per word:		0.111s
+
+Words starting with 'b'
+Number of words:		1003
+Total time taken:		630.6973s
+Average tries per word:		6.674
+Average time per word:		0.6288s
+
+Words starting with 'c'
+Number of words:		970
+Total time taken:		636.0776s
+Average tries per word:		6.834
+Average time per word:		0.6558s
+
+Words starting with 'd'
+Number of words:		735
+Total time taken:		552.935s
+Average tries per word:		6.7565
+Average time per word:		0.7523s
+
+Words starting with 'e'
+Number of words:		330
+Total time taken:		232.4659s
+Average tries per word:		6.2212
+Average time per word:		0.7044s
+
+Words starting with 'f'
+Number of words:		646
+Total time taken:		433.3899s
+Average tries per word:		6.7554
+Average time per word:		0.6709s
+
+Words starting with 'g'
+Number of words:		685
+Total time taken:		464.5505s
+Average tries per word:		7.219
+Average time per word:		0.6782s
+
+Words starting with 'h'
+Number of words:		532
+Total time taken:		351.7351s
+Average tries per word:		7.4944
+Average time per word:		0.6612s
+
+Words starting with 'i'
+Number of words:		180
+Total time taken:		121.5097s
+Average tries per word:		6.3
+Average time per word:		0.6751s
+
+Words starting with 'j'
+Number of words:		225
+Total time taken:		148.6295s
+Average tries per word:		7.6533
+Average time per word:		0.6606s
+
+Words starting with 'k'
+Number of words:		429
+Total time taken:		294.4354s
+Average tries per word:		7.5221
+Average time per word:		0.6863s
+
+Words starting with 'l'
+Number of words:		625
+Total time taken:		416.5482s
+Average tries per word:		8.0032
+Average time per word:		0.6665s
+
+Words starting with 'm'
+Number of words:		951
+Total time taken:		657.5699s
+Average tries per word:		8.6278
+Average time per word:		0.6915s
+
+Words starting with 'n'
+Number of words:		468
+Total time taken:		321.6885s
+Average tries per word:		8.406
+Average time per word:		0.6874s
+
+Words starting with 'o'
+Number of words:		352
+Total time taken:		213.2185s
+Average tries per word:		7.8409
+Average time per word:		0.6057s
+
+Words starting with 'p'
+Number of words:		1130
+Total time taken:		771.8097s
+Average tries per word:		9.0646
+Average time per word:		0.683s
+
+Words starting with 'q'
+Number of words:		103
+Total time taken:		74.5908s
+Average tries per word:		8.5049
+Average time per word:		0.7242s
+
+Words starting with 'r'
+Number of words:		795
+Total time taken:		543.0572s
+Average tries per word:		8.9296
+Average time per word:		0.6831s
+
+Words starting with 's'
+Number of words:		1666
+Total time taken:		1102.5811s
+Average tries per word:		8.9826
+Average time per word:		0.6618s
+
+Words starting with 't'
+Number of words:		882
+Total time taken:		582.6345s
+Average tries per word:		9.6791
+Average time per word:		0.6606s
+
+Words starting with 'u'
+Number of words:		217
+Total time taken:		161.0786s
+Average tries per word:		7.5991
+Average time per word:		0.7423s
+
+Words starting with 'v'
+Number of words:		284
+Total time taken:		195.646s
+Average tries per word:		9.8908
+Average time per word:		0.6889s
+
+Words starting with 'w'
+Number of words:		434
+Total time taken:		276.3063s
+Average tries per word:		10.7627
+Average time per word:		0.6367s
+
+Words starting with 'x'
+Number of words:		18
+Total time taken:		12.4314s
+Average tries per word:		10.2778
+Average time per word:		0.6906s
+
+Words starting with 'y'
+Number of words:		205
+Total time taken:		134.827s
+Average tries per word:		10.8976
+Average time per word:		0.6577s
+
+Words starting with 'z'
+Number of words:		122
+Total time taken:		84.8973s
+Average tries per word:		10.9508
+Average time per word:		0.6959s
+
+Total time to solve 14855 words was 158.5504 min.

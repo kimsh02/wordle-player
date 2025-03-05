@@ -17,6 +17,7 @@ std::unordered_set<std::string> WordlePlayer::readWords(void) const
 {
 	std::unordered_set<std::string> words{};
 
+	/* Change file path as needed */
 	std::ifstream f("../assets/valid-wordle-words.txt");
 	if (!f) {
 		std::cerr << "ERROR: Unable to open file!\n";
